@@ -1,0 +1,82 @@
+[global]
+# Network identifier (32 bytes, hex-encoded)
+network_id = "0x0000000000000000000000000000000000000000000000000000000000000000"
+
+# Maximum number of nodes in the network
+max_nodes = 1000
+
+# Number of layers in stratified topology
+mixnet_layers = 5
+
+# Maximum packet size (Sphinx standard)
+max_packet_size = 2413
+
+[topology]
+# Topology type: "stratified" or "free-routes"
+topology_type = "stratified"
+
+# Topology update interval in seconds
+update_interval = 3600
+
+[crypto]
+# Post-quantum algorithm: "kyber1024", "mceliece", "xwing"
+pq_algorithm = "kyber1024"
+
+# Symmetric cipher: "xchacha20poly1305", "aes256gcm"
+symmetric_cipher = "xchacha20poly1305"
+
+# Hash function: "blake3", "sha3-256"
+hash_function = "blake3"
+
+# Enable hardware security module
+use_hsm = false
+
+# Enable quantum-safe mode
+quantum_safe = true
+
+[timing]
+# Mean delay for Poisson process (milliseconds)
+poisson_lambda = 50.0
+
+# Maximum delay (milliseconds)
+max_delay = 5000
+
+# Minimum delay (milliseconds)
+min_delay = 10
+
+[traffic]
+# Cover traffic ratio (0.0 to 1.0)
+cover_traffic_ratio = 0.4
+
+# Target packets per second
+target_rate = 100.0
+
+[economics]
+# Stake required to run a node (tokens)
+stake_required = 1000
+
+# Reward per packet processed
+reward_per_packet = 0.001
+
+# Percentage slashed for misbehavior
+slash_percentage = 0.1
+
+# Minimum reputation for rewards
+min_reputation_for_rewards = 0.5
+
+[access_control]
+# Use zero-knowledge proofs
+use_zkp = true
+
+# Reputation threshold for node selection
+reputation_threshold = 0.7
+
+[monitoring]
+# Metrics export port
+metrics_port = 9090
+
+# Enable detailed logging
+debug_logging = false
+
+# Log file path
+log_file = "/var/log/aether/node.log"

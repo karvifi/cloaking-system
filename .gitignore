@@ -1,0 +1,54 @@
+.DS_Store
+Thumbs.db
+
+# Rust
+/target/
+**/*.rs.bk
+*.pdb
+Cargo.lock
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+
+# Keys and secrets
+keys/*.key
+keys/*.pem
+*.key
+*.pem
+network_id.bin
+
+# Logs
+*.log
+logs/
+/var/log/aether/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Docker
+.env
+docker-compose.override.yml
+
+# Simulation outputs
+*.png
+*.pdf
+simulation_results/
+
+# OS
+.DS_Store
+Thumbs.db
