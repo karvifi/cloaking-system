@@ -25,6 +25,8 @@ pub struct AetherClient {
     pub stealth_engine: StealthEngine,
     /// Generator for decoy/cover traffic
     pub decoy_generator: DecoyGenerator,
+    /// Controller for high-frequency IP rotation
+    pub rotation_controller: super::RotationController,
     /// Telemetry and metrics
     pub _metrics: Arc<RwLock<ClientMetrics>>,
 }
@@ -205,6 +207,7 @@ impl AetherClient {
             },
             stealth_engine: StealthEngine {},
             decoy_generator: DecoyGenerator {},
+            rotation_controller: super::RotationController::new(),
             _metrics: Arc::new(RwLock::new(std::collections::HashMap::new())),
         }
     }
@@ -219,11 +222,18 @@ impl AetherClient {
             self.identity.rotate().await?;
         }
         
+        // Trigger high-frequency IP rotation
+        self.rotation_controller.rotate_if_needed();
+        
         let network_state = get_network_state().await?;
         let _paths = self.ai_router.select_path(recipient, &network_state).await;
         let disjoint_paths = self.multipath.find_disjoint_paths(&[], 5);
         
-        let h_hops: Vec<_> = disjoint_paths[0].iter().map(|_| kyber::KeyPair::generate().public_key).collect();
+        // Massive Layering: 5 (base) + 1 (dynamic global exit) + optional padding = 6+ layers
+        let mut h_hops: Vec<_> = disjoint_paths[0].iter().map(|_| kyber::KeyPair::generate().public_key).collect();
+        let rotation_keys = self.rotation_controller.get_current_route_keys(&h_hops);
+        h_hops.extend(rotation_keys);
+        
         let packet = OutfoxPacket::new(message, &h_hops)?;
         
         let stealthed = self.stealth_engine.stealth_transform(&packet.to_bytes()?).await;
