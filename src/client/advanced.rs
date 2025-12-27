@@ -177,6 +177,38 @@ impl DecoyGenerator {
 
 /// Complete client implementation
 impl AetherClient {
+    /// Create a new Aether client with default settings
+    pub fn new() -> Self {
+        Self {
+            identity: ClientIdentity {
+                epoch: 0,
+                signing_key: SigningKey::generate(&mut rand::thread_rng()),
+                encryption_key: kyber::KeyPair::generate(),
+                credential: crate::zk_access::AnonymousCredential::dummy(),
+                last_rotation: std::time::Instant::now(),
+            },
+            ai_router: AdaptiveRouter {
+                model: Arc::new(RwLock::new(PathSelectionModel)),
+                _history: vec![],
+                threat_level: Arc::new(RwLock::new(0.0)),
+            },
+            multipath: MultipathEngine {
+                _redundancy_factor: 5,
+                fec_encoder: ReedSolomonEncoder,
+            },
+            constant_time_crypto: ConstantTimeCrypto {
+                _isolated_core: None,
+                noise_generator: NoiseGenerator,
+            },
+            threat_detector: ThreatDetector {
+                _threat_level: Arc::new(RwLock::new(0.0)),
+            },
+            stealth_engine: StealthEngine {},
+            decoy_generator: DecoyGenerator {},
+            _metrics: Arc::new(RwLock::new(std::collections::HashMap::new())),
+        }
+    }
+
     /// Send message with maximum anonymity
     pub async fn send_anonymous(
         &mut self,

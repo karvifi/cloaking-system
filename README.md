@@ -60,7 +60,22 @@ To run the full network continuously in a single process with real-time simulati
 cargo run --features full,zkproofs
 ```
 
-This will initialize all 5 layers, run background workers, and periodically verify cryptographic integrity via ZK-Shield checks.
+### 🕶️ Cloaking Mode (Hide Your IP)
+
+The Aether Network now includes a **Local SOCKS5 Gateway**. You can route your real browser or application traffic through the post-quantum mixnet to hide your IP address.
+
+1.  **Start the Gateway**: Run the network using the command above. It will listen on `127.0.0.1:9050`.
+2.  **Configure Application**: Set your browser (Chrome/Firefox) or system proxy to `SOCKS5` with address `127.0.0.1` and port `9050`.
+3.  **Use Stealth Scripts**:
+    ```bash
+    # Option A: Shell script (automatic browser launch)
+    ./scripts/stealth_browser.sh
+
+    # Option B: Advanced Python Stealth (Undetected Chromedriver)
+    python scripts/stealth_browser.py
+    ```
+
+💡 **Tip**: Use [ipleak.net](https://ipleak.net) to verify that your real IP is no longer visible.
 
 ### Build
 

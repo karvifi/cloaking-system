@@ -7,7 +7,10 @@ use aether_network::mixnet::node::{MixNode, NodeRole};
 use aether_network::AetherConfig;
 use aether_network::advanced::AdvancedFeatures;
 use aether_network::protocols::OutfoxPacket;
+use aether_network::client::advanced::AetherClient;
+use aether_network::gateway::SocksGateway;
 use std::sync::Arc;
+use tokio::sync::Mutex;
 use tokio::time::{sleep, Duration};
 use tracing::{info, warn, level_filters::LevelFilter};
 use tracing_subscriber::{fmt, prelude::*, Registry};
@@ -52,11 +55,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         nodes.push(node);
     }
     
-    info!("🚀 Network is LIVE and operational.");
     info!("🛡️  Post-Quantum Security Active (Kyber-1024)");
     info!("------------------------------------------");
 
-    // 5. Continuous Loop: Active Simulation & Monitoring
+    // 5. Initialize SOCKS5 Gateway for real application traffic
+    let aether_client = Arc::new(Mutex::new(AetherClient::new()));
+    let gateway = SocksGateway::new(9050, Arc::clone(&aether_client));
+    
+    // Start gateway in a separate task
+    tokio::spawn(async move {
+        if let Err(e) = gateway.run().await {
+            warn!("🛑 Gateway failure: {}", e);
+        }
+    });
+
+    // 6. Continuous Loop: Active Simulation & Monitoring
     let mut packet_count = 0;
     loop {
         packet_count += 1;

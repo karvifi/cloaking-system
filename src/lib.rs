@@ -13,6 +13,7 @@ pub mod routing;
 pub mod metrics;
 pub mod error;
 pub mod zk_access;
+pub mod gateway;
 
 // Advanced features (Ultimate Edition)
 #[cfg(feature = "advanced-stealth")]
