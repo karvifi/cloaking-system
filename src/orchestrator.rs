@@ -127,7 +127,7 @@ impl AetherOrchestrator {
         let start = std::time::Instant::now();
         
         // Tier 0: Packet authentication
-        let mut processed_data = if let Some(ref auth) = self.packet_auth {
+        let mut processed_data = if let Some(ref mut auth) = self.packet_auth {
             let packet = auth.create_packet(data);
             packet.payload
         } else {

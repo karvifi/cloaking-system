@@ -3,7 +3,10 @@
 //! High-performance network I/O without allocations
 
 use std::io::{self, IoSlice, IoSliceMut};
+#[cfg(unix)]
 use std::os::unix::io::AsRawFd;
+#[cfg(windows)]
+use std::os::windows::io::AsRawHandle;
 
 pub struct ZeroCopyIo;
 

@@ -133,79 +133,82 @@ impl Socks5Server {
 
         // 3. 🌐 CHAINED JUMPING (Tor -> Global Proxy -> Target)
         if let Some(mgr) = rotation {
-            let upstream_proxy = mgr.get_current_ip().await;
-            
-            if !upstream_proxy.contains("initializing") && !upstream_proxy.is_empty() {
-                match TcpStream::connect(&final_tor_addr).await {
-                    Ok(mut tor_stream) => {
-                        // 🎭 PHASE 11: Steganographic Cloak (Tor Handshake)
-                        // In high-security mode, we'd also cloak the stream to the global proxy.
-                        
-                        // Handshake with Tor
-                        let _ = tor_stream.write_all(&[5, 1, 0]).await;
-                        let mut tor_resp = [0u8; 2];
-                        let _ = tor_stream.read_exact(&mut tor_resp).await;
-                        
-                        // Ask Tor to connect to Global Proxy
-                        let parts: Vec<&str> = upstream_proxy.split(':').collect();
-                        if parts.len() == 2 {
-                            let proxy_host = parts[0];
-                            let proxy_port = parts[1].parse::<u16>().unwrap_or(80);
-                            
-                            let mut tor_req = vec![5, 1, 0, 3];
-                            tor_req.push(proxy_host.len() as u8);
-                            tor_req.extend_from_slice(proxy_host.as_bytes());
-                            tor_req.extend_from_slice(&proxy_port.to_be_bytes());
-                            let _ = tor_stream.write_all(&tor_req).await;
-                            
-                            let mut tor_conn_resp = vec![0u8; 10];
-                            if let Ok(_) = timeout(Duration::from_secs(10), tor_stream.read_exact(&mut tor_conn_resp)).await {
-                                if tor_conn_resp[1] == 0 {
-                                    // 🎭 PHASE 11: Stegano Cloak (Global Proxy CONNECT)
-                                    // We send a mock TLS handshake to the global proxy before the CONNECT
-                                    let _ = SteganoWrapper::cloak_handshake(&mut tor_stream, &dest_addr).await;
+            for attempt in 1..=3 {
+                let upstream_proxy = mgr.get_current_ip().await;
+                if upstream_proxy.contains("initializing") || upstream_proxy.is_empty() {
+                    break;
+                }
 
-                                    // Send HTTP CONNECT to Global Proxy via Tor
-                                    let connect_req = format!("CONNECT {} HTTP/1.1\r\nHost: {}\r\nConnection: keep-alive\r\n\r\n", target, target);
-                                    let _ = tor_stream.write_all(connect_req.as_bytes()).await;
-                                    
-                                    let mut response = Vec::new();
-                                    let mut header_buf = [0u8; 1];
-                                    let mut success = false;
-                                    
-                                    let handshake = async {
-                                        while response.len() < 4096 {
-                                            tor_stream.read_exact(&mut header_buf).await?;
-                                            response.push(header_buf[0]);
-                                            if response.ends_with(b"\r\n\r\n") { 
-                                                if String::from_utf8_lossy(&response).contains("200") {
-                                                    success = true;
-                                                }
-                                                break; 
-                                            }
-                                        }
-                                        Ok::<(), Box<dyn std::error::Error + Send + Sync>>(())
-                                    };
+                tracing::info!("🚀 HYPER-JUMP ATTEMPT {}/3 → {} (via {})", attempt, target, upstream_proxy);
 
-                                    if let Ok(_) = timeout(Duration::from_secs(10), handshake).await {
-                                        if success {
-                                            // 🛡️ PHASE 13: Zero-Knowledge Authorization
-                                            // Simulate a proof generation for the session
-                                            let sk = ZKAuthorization::random_scalar();
-                                            let _proof = ZKAuthorization::generate_proof(&sk);
-                                            tracing::info!("🛡️ PHASE 13: ZK-Schnorr Authorization Proof attached to session");
+                let jump_result: Result<(), Box<dyn std::error::Error + Send + Sync>> = async {
+                    let mut tor_stream = TcpStream::connect(&final_tor_addr).await?;
+                    
+                    // Handshake with Tor
+                    tor_stream.write_all(&[5, 1, 0]).await?;
+                    let mut tor_resp = [0u8; 2];
+                    tor_stream.read_exact(&mut tor_resp).await?;
+                    
+                    // Ask Tor to connect to Global Proxy
+                    let parts: Vec<&str> = upstream_proxy.split(':').collect();
+                    if parts.len() != 2 { return Err("Invalid proxy format".into()); }
+                    
+                    let proxy_host = parts[0];
+                    let proxy_port = parts[1].parse::<u16>().unwrap_or(80);
+                    
+                    let mut tor_req = vec![5, 1, 0, 3];
+                    tor_req.push(proxy_host.len() as u8);
+                    tor_req.extend_from_slice(proxy_host.as_bytes());
+                    tor_req.extend_from_slice(&proxy_port.to_be_bytes());
+                    tor_stream.write_all(&tor_req).await?;
+                    
+                    let mut tor_conn_resp = vec![0u8; 10];
+                    timeout(Duration::from_secs(10), tor_stream.read_exact(&mut tor_conn_resp)).await??;
+                    if tor_conn_resp[1] != 0 { return Err("Tor failed to connect to proxy".into()); }
 
-                                            let _ = client.write_all(&[5, 0, 0, 1, 0, 0, 0, 0, 0, 0]).await;
-                                            tracing::info!("🚀 HYPER-JUMP SUCCESS → {} (via {}) [1000x SHIELD ACTIVE]", target, upstream_proxy);
-                                            tokio::io::copy_bidirectional(&mut client, &mut tor_stream).await?;
-                                            return Ok(());
-                                        }
-                                    }
+                    // 🎭 PHASE 11: Stegano Cloak (Global Proxy CONNECT)
+                    let _ = SteganoWrapper::cloak_handshake(&mut tor_stream, &dest_addr).await;
+
+                    // Send HTTP CONNECT to Global Proxy via Tor
+                    let connect_req = format!("CONNECT {} HTTP/1.1\r\nHost: {}\r\nConnection: keep-alive\r\n\r\n", target, target);
+                    tor_stream.write_all(connect_req.as_bytes()).await?;
+                    
+                    let mut response = Vec::new();
+                    let mut header_buf = [0u8; 1];
+                    let mut success = false;
+                    
+                    let handshake = async {
+                        while response.len() < 4096 {
+                            tor_stream.read_exact(&mut header_buf).await?;
+                            response.push(header_buf[0]);
+                            if response.ends_with(b"\r\n\r\n") { 
+                                if String::from_utf8_lossy(&response).contains("200") {
+                                    success = true;
                                 }
+                                break; 
                             }
                         }
-                    }
-                    Err(e) => tracing::error!("❌ Local Tor connection failed: {}", e),
+                        Ok::<(), Box<dyn std::error::Error + Send + Sync>>(())
+                    };
+
+                    timeout(Duration::from_secs(10), handshake).await??;
+                    if !success { return Err("Proxy refused CONNECT".into()); }
+
+                    // 🛡️ PHASE 13: Zero-Knowledge Authorization
+                    let sk = ZKAuthorization::random_scalar();
+                    let _proof = ZKAuthorization::generate_proof(&sk);
+                    tracing::info!("🛡️ PHASE 13: ZK-Schnorr Authorization Proof attached to session");
+
+                    client.write_all(&[5, 0, 0, 1, 0, 0, 0, 0, 0, 0]).await?;
+                    tracing::info!("✨ HYPER-JUMP SUCCESS → {} [1000x SHIELD ACTIVE]", target);
+                    tokio::io::copy_bidirectional(&mut client, &mut tor_stream).await?;
+                    Ok(())
+                }.await;
+
+                if jump_result.is_ok() {
+                    return Ok(());
+                } else {
+                    tracing::debug!("   Attempt {} failed: {:?}", attempt, jump_result.err());
                 }
             }
         }

@@ -3,6 +3,8 @@
 //! Real implementation using Open Quantum Safe algorithms
 
 use std::process::Command;
+use pqcrypto_traits::kem::{PublicKey as _, SecretKey as _, SharedSecret as _, Ciphertext as _};
+use pqcrypto_traits::sign::{PublicKey as _, SecretKey as _, SignedMessage as _};
 
 pub struct OqsKemIntegration {
     algorithm: String,

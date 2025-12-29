@@ -111,5 +111,5 @@ impl MasscanIntegration {
     }
 }
 
-/// Installation: https://github.com/robertdavidgraham/masscan
-/// Usage: masscan 192.168.0.1 -p80,443 --rate 1000
+// Installation: https://github.com/robertdavidgraham/masscan
+// Usage: masscan 192.168.0.1 -p80,443 --rate 1000

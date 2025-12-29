@@ -5,6 +5,7 @@
 use ark_ff::PrimeField;
 use ark_relations::r1cs::{ConstraintSynthesizer, ConstraintSystemRef, SynthesisError};
 use ark_r1cs_std::prelude::*;
+use ark_r1cs_std::fields::fp::FpVar;
 
 /// Recursive proof circuit - composes multiple ZK proofs
 pub struct RecursiveProofCircuit<F: PrimeField> {

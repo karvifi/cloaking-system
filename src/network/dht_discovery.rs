@@ -2,7 +2,7 @@
 //! 
 //! Kademlia-based peer discovery for decentralized architecture
 
-use libp2p::{kad::{Kademlia, KademliaEvent}, PeerId};
+use libp2p::{kad::{Behaviour as Kademlia, Event as KademliaEvent}, PeerId};
 use std::collections::HashMap;
 
 pub struct DhtNodeDiscovery {

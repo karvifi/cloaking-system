@@ -3,6 +3,8 @@
 //! First post-quantum mixnet with HPQC (Hybrid Post-Quantum Cryptography)
 
 use std::collections::VecDeque;
+use pqcrypto_traits::kem::*;
+use pqcrypto_traits::sign::*;
 
 pub struct KatzenpostMixnet {
     /// HPQC hybrid keys (classical + PQ)

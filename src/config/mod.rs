@@ -17,6 +17,9 @@ pub struct AetherConfig {
     pub tier6: Tier6Config,
     pub tier7: Tier7Config,
     pub tier8: Tier8Config,
+    pub mixnet_layers: usize,
+    pub poisson_lambda: f64,
+    pub cover_traffic_ratio: f64,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -134,6 +137,9 @@ impl Default for AetherConfig {
                 cli_enabled: true,
                 api_docs: true,
             },
+            mixnet_layers: 5,
+            poisson_lambda: 2.0,
+            cover_traffic_ratio: 0.1,
         }
     }
 }

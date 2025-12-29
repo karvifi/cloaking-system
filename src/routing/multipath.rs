@@ -195,7 +195,7 @@ mod tests {
                     id[0] = i;
                     id
                 },
-                layer: (i % 5) + 1,
+                layer: ((i % 5) + 1) as usize,
                 role: NodeRole::MixNode,
                 reputation: 0.9,
                 stake: 1000,

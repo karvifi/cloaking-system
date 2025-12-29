@@ -5,6 +5,8 @@
 #![warn(missing_docs)]
 #![warn(unsafe_code)]
 
+extern crate pqcrypto_traits;
+
 pub mod config;
 pub mod crypto;
 pub mod mixnet;
@@ -20,6 +22,8 @@ pub mod error;
 pub mod network;
 pub mod privacy;
 pub mod proxy;
+pub mod protocols;
+pub mod routing;
 
 // Advanced features (Ultimate Edition)
 #[cfg(feature = "advanced-stealth")]
@@ -27,10 +31,6 @@ pub mod stealth;
 
 #[cfg(feature = "hardware-security")]
 pub mod hardware;
-
-
-// Maximum realistic features (9.8/10 system)
-pub mod advanced;
 
 pub use config::AetherConfig;
 pub use error::{AetherError, Result};

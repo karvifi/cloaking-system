@@ -99,5 +99,5 @@ impl BbotIntegration {
     }
 }
 
-/// Installation: pip install bbot
-/// Usage: bbot -t target.com -f subdomain-enum email-enum
+// Installation: pip install bbot
+// Usage: bbot -t target.com -f subdomain-enum email-enum

@@ -72,7 +72,7 @@ mod tests {
     #[test]
     fn test_zk_handshake() {
         let secret_x = ZKAuthorization::random_scalar();
-        let public_y = &secret_x * &RISTRETTO_BASEPOINT_TABLE;
+        let public_y = &secret_x * RISTRETTO_BASEPOINT_TABLE;
         
         let (t, s) = ZKAuthorization::generate_proof(&secret_x);
         assert!(ZKAuthorization::verify_proof(&public_y, &t, &s));

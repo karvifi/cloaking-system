@@ -50,8 +50,11 @@ impl AiTrafficAnalyzer {
         // Simplified anomaly scoring
         // In production: Use trained neural network (LSTM/Transformer)
         
-        let size_variance = Self::variance(&features.packet_sizes);
-        let timing_variance = Self::variance(&features.inter_arrival_times);
+        let sizes_f64: Vec<f64> = features.packet_sizes.iter().map(|&x| x as f64).collect();
+        let times_f64: Vec<f64> = features.inter_arrival_times.iter().map(|&x| x as f64).collect();
+        
+        let size_variance = Self::variance(&sizes_f64);
+        let timing_variance = Self::variance(&times_f64);
         
         // High variance = more random = less suspicious
         // Low variance = more uniform = potentially suspicious
@@ -60,15 +63,15 @@ impl AiTrafficAnalyzer {
         score.clamp(0.0, 1.0)
     }
 
-    fn variance(data: &[impl Into<f64> + Copy]) -> f64 {
+    fn variance(data: &[f64]) -> f64 {
         if data.is_empty() {
             return 0.0;
         }
         
-        let mean: f64 = data.iter().map(|&x| x.into()).sum::<f64>() / data.len() as f64;
+        let mean: f64 = data.iter().sum::<f64>() / data.len() as f64;
         let variance = data.iter()
             .map(|&x| {
-                let diff = x.into() - mean;
+                let diff = x - mean;
                 diff * diff
             })
             .sum::<f64>() / data.len() as f64;

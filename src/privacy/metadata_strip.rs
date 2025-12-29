@@ -39,8 +39,8 @@ impl MetadataStripper {
             "X-Requested-With", "Origin", "Host", 
         ];
         
-        for header in dangerous_headers {
-            headers.remove(header);
+        for header in &dangerous_headers {
+            headers.remove(*header);
         }
         
         tracing::info!("🧹 METADATA STRIPPED: Removed {} identifying headers", dangerous_headers.len());
