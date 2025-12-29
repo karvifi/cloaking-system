@@ -17,10 +17,7 @@ impl CertificatePinner {
         
         // Tor Project directory authority pins
         pins.insert("www.torproject.org".to_string(), vec![
-            "a053375bfe84e8b748782c7cee15827a6af5a405e2b38c4477e4"[...]
-
-.truncated()"
-            .to_string(),
+            "a053375bfe84e8b748782c7cee15827a6af5a405e2b38c4477e4".to_string(),
         ]);
         
         // Critical infrastructure pins
@@ -39,18 +36,18 @@ impl CertificatePinner {
         
         if let Some(pinned_fps) = self.pins.get(domain) {
             if pinned_fps.contains(&fingerprint) {
-                tracing::info!("✅ CERT PIN VERIFIED: {} matches pinned fingerprint", domain);
+                tracing::info!("[CERT PIN] Verified: {} matches pinned fingerprint", domain);
                 Ok(())
             } else {
                 let error = format!(
-                    "🚨 QUANTUMINSERT DETECTED: Certificate mismatch for {}!\nExpected: {:?}\nGot: {}",
+                    "[QUANTUMINSERT DETECTED] Certificate mismatch for {}! Expected: {:?} Got: {}",
                     domain, pinned_fps, fingerprint
                 );
                 tracing::error!("{}", error);
                 Err(error)
             }
         } else {
-            tracing::warn!("⚠️ No pin configured for domain: {}", domain);
+            tracing::warn!("[WARNING] No pin configured for domain: {}", domain);
             Ok(()) // Allow if no pin configured
         }
     }
@@ -60,7 +57,7 @@ impl CertificatePinner {
         self.pins.entry(domain.clone())
             .or_insert_with(Vec::new)
             .push(fingerprint);
-        tracing::info!("📌 Added certificate pin for: {}", domain);
+        tracing::info!("[CERT PIN] Added certificate pin for: {}", domain);
     }
 }
 
@@ -86,14 +83,14 @@ impl DualPathValidator {
         
         match (tor_result, i2p_result) {
             (Ok(_), Ok(_)) => {
-                tracing::info!("✅ DUAL-PATH VERIFIED: Certificate validated via Tor AND I2P");
+                tracing::info!("[DUAL-PATH] Certificate validated via Tor AND I2P");
                 self.pinner.verify_certificate(domain, cert_der)
             }
             (Err(e1), Err(e2)) => {
-                Err(format!("🚨 DUAL-PATH FAILED: Tor: {} | I2P: {}", e1, e2))
+                Err(format!("[DUAL-PATH FAILED] Tor: {} | I2P: {}", e1, e2))
             }
             _ => {
-                tracing::warn!("⚠️ PARTIAL VERIFICATION: One path failed, using pinning");
+                tracing::warn!("[PARTIAL VERIFICATION] One path failed, using pinning");
                 self.pinner.verify_certificate(domain, cert_der)
             }
         }
@@ -101,13 +98,13 @@ impl DualPathValidator {
 
     async fn verify_via_tor(&self, domain: &str, _cert: &[u8]) -> Result<(), String> {
         // TODO: Implement actual Tor-based certificate fetch and verification
-        tracing::info!("🧅 Verifying {} via Tor...", domain);
+        tracing::info!("[TOR] Verifying {} via Tor...", domain);
         Ok(())
     }
 
     async fn verify_via_i2p(&self, domain: &str, _cert: &[u8]) -> Result<(), String> {
         // TODO: Implement actual I2P-based certificate fetch and verification
-        tracing::info!("🌐 Verifying {} via I2P...", domain);
+        tracing::info!("[I2P] Verifying {} via I2P...", domain);
         Ok(())
     }
 }

@@ -17,8 +17,9 @@ pub mod install;
 pub mod orchestrator;
 pub mod cli;
 pub mod error;
-pub mod zk_access;
 pub mod network;
+pub mod privacy;
+pub mod proxy;
 
 // Advanced features (Ultimate Edition)
 #[cfg(feature = "advanced-stealth")]
@@ -26,12 +27,7 @@ pub mod stealth;
 
 #[cfg(feature = "hardware-security")]
 pub mod hardware;
-pub mod proxy;
-pub mod integration;
-pub mod privacy;
 
-#[cfg(any(feature = "ai-routing", feature = "ultimate"))]
-pub mod client;
 
 // Maximum realistic features (9.8/10 system)
 pub mod advanced;
