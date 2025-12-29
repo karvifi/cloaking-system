@@ -2,8 +2,10 @@
 
 pub mod packet;
 pub mod sphinx_compat;
+pub mod sphinx;
 
 pub use packet::{OutfoxPacket, PacketMetadata, create_packet, process_packet_layer};
+pub use sphinx::{SphinxBuilder, SphinxProcessor, ProcessedPacket};
 
 /// Maximum packet size for Outfox (larger than Sphinx to accommodate post-quantum)
 pub const MAX_PACKET_SIZE: usize = 10000;

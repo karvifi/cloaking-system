@@ -5,7 +5,7 @@
 
 use ark_ff::PrimeField;
 use ark_ec::pairing::Pairing;
-use ark_groth16::{Groth16, Proof};
+use ark_groth16::Groth16;
 use ark_snark::SNARK;
 use ark_bn254::{Bn254, Fr as Bn254Fr};
 use ark_bls12_381::{Bls12_381, Fr as Bls12Fr};

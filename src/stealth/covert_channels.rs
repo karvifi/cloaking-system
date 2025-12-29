@@ -139,7 +139,9 @@ impl HttpChannel {
     
     /// Encode data in URL parameter
     pub fn encode_url(&self, base_url: &str, data: &[u8]) -> String {
-        let encoded = base64::encode(data);
+        use base64::Engine as _;
+        use base64::engine::general_purpose::STANDARD;
+        let encoded = STANDARD.encode(data);
         format!("{}?{}={}", base_url, self.param_name, encoded)
     }
     
@@ -155,7 +157,9 @@ impl HttpChannel {
         for param in parts[1].split('&') {
             let kv: Vec<&str> = param.split('=').collect();
             if kv.len() == 2 && kv[0] == self.param_name {
-                return base64::decode(kv[1]).ok();
+                use base64::Engine as _;
+                use base64::engine::general_purpose::STANDARD;
+                return STANDARD.decode(kv[1]).ok();
             }
         }
         

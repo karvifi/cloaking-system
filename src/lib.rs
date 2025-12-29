@@ -13,7 +13,8 @@ pub mod routing;
 pub mod metrics;
 pub mod error;
 pub mod zk_access;
-pub mod gateway;
+pub mod consensus;
+pub mod network;
 
 // Advanced features (Ultimate Edition)
 #[cfg(feature = "advanced-stealth")]
@@ -21,6 +22,9 @@ pub mod stealth;
 
 #[cfg(feature = "hardware-security")]
 pub mod hardware;
+pub mod proxy;
+pub mod integration;
+pub mod privacy;
 
 #[cfg(any(feature = "ai-routing", feature = "ultimate"))]
 pub mod client;
