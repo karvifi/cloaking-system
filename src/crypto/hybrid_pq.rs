@@ -117,9 +117,9 @@ impl HybridSigner {
     }
 }
 
-/// Security Analysis:
-/// 
-/// - Ed25519: 2^128 classical security
-/// - Dilithium5: NIST Level 5 post-quantum security (~256-bit equivalent)
-/// - Hybrid: Secure against BOTH classical AND quantum attackers
-/// - Signature size: ~4664 bytes (64 + ~4600)
+// Security Analysis:
+// 
+// - Ed25519: 2^128 classical security
+// - Dilithium5: NIST Level 5 post-quantum security (~256-bit equivalent)
+// - Hybrid: Secure against BOTH classical AND quantum attackers
+// - Signature size: ~4664 bytes (64 + ~4600)

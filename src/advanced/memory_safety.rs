@@ -35,6 +35,6 @@ impl MemorySafetyManager {
     }
 }
 
-/// Build with sanitizers:
-/// RUSTFLAGS="-Z sanitizer=address" cargo build
-/// RUSTFLAGS="-Z sanitizer=memory" cargo build
+// Build with sanitizers:
+// RUSTFLAGS="-Z sanitizer=address" cargo build
+// RUSTFLAGS="-Z sanitizer=memory" cargo build

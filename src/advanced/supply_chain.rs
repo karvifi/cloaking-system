@@ -113,9 +113,9 @@ impl BuildAttestation {
     }
 }
 
-/// Usage: Generate attestation after build
-/// ```
-/// cargo build --release
-/// let attestation = BuildAttestation::generate(Path::new("target/release/aether-network"))?;
-/// std::fs::write("attestation.json", attestation.to_json())?;
-/// ```
+// Usage: Generate attestation after build
+// ```
+// cargo build --release
+// let attestation = BuildAttestation::generate(Path::new("target/release/aether-network"))?;
+// std::fs::write("attestation.json", attestation.to_json())?;
+// ```

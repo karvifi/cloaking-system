@@ -1,9 +1,9 @@
 //! IP Rotation JSON Parsing with Health Validation
-//! 
+//!
 //! Structured parsing of proxy API responses with health checking
 
 use serde::{Deserialize, Serialize};
-use std::time::{Duration, SystemTime};
+use std::time::Duration;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ProxyCandidate {
@@ -38,13 +38,13 @@ impl ProxyHealthChecker {
     pub fn parse_json_response(&self, json: &str, source: &str) -> Result<Vec<ProxyCandidate>, String> {
         // Try structured JSON first
         if let Ok(response) = serde_json::from_str::<ProxyApiResponse>(json) {
-            tracing::info!(\"✅ Parsed {} proxies from {}\", response.proxies.len(), source);
+            tracing::info!("Parsed {} proxies from {}", response.proxies.len(), source);
             return Ok(response.proxies);
         }
 
         // Try array format
         if let Ok(proxies) = serde_json::from_str::<Vec<ProxyCandidate>>(json) {
-            tracing::info!(\"✅ Parsed {} proxies from {}\", proxies.len(), source);
+            tracing::info!("Parsed {} proxies from {}", proxies.len(), source);
             return Ok(proxies);
         }
 
@@ -81,31 +81,31 @@ impl ProxyHealthChecker {
         }
 
         if proxies.is_empty() {
-            return Err(format!(\"Failed to parse any proxies from {}\", source));
+            return Err(format!("Failed to parse any proxies from {}", source));
         }
 
-        tracing::info!(\"✅ Parsed {} proxies from {} (plain text)\", proxies.len(), source);
+        tracing::info!("Parsed {} proxies from {} (plain text)", proxies.len(), source);
         Ok(proxies)
     }
 
     /// Health check a proxy candidate
     pub async fn health_check(&self, proxy: &ProxyCandidate) -> bool {
-        let addr = format!(\"{}:{}\", proxy.ip, proxy.port);
+        let addr = format!("{}:{}", proxy.ip, proxy.port);
         
         match tokio::time::timeout(
             self.timeout,
             tokio::net::TcpStream::connect(&addr)
         ).await {
             Ok(Ok(_)) => {
-                tracing::info!(\"✅ Proxy {} is responsive\", addr);
+                tracing::info!("Proxy {} is responsive", addr);
                 true
             }
             Ok(Err(e)) => {
-                tracing::warn!(\"❌ Proxy {} failed: {}\", addr, e);
+                tracing::warn!("Proxy {} failed: {}", addr, e);
                 false
             }
             Err(_) => {
-                tracing::warn!(\"⏱️ Proxy {} timed out\", addr);
+                tracing::warn!("Proxy {} timed out", addr);
                 false
             }
         }
@@ -126,7 +126,7 @@ impl ProxyHealthChecker {
             }
         }
         
-        tracing::info!(\"🏥 Health check complete: {}/{} proxies healthy\", 
+        tracing::info!("Health check complete: {}/{} proxies healthy", 
             healthy.len(), healthy.len());
         
         healthy

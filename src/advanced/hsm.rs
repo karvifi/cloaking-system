@@ -82,22 +82,22 @@ impl HsmManager {
     }
 }
 
-/// Integration Guide:
-/// 
-/// **YubiKey Setup**:
-/// ```bash
-/// # Install PKCS#11 library
-/// sudo apt-get install ykcs11
-/// 
-/// # Initialize PIV application
-/// yubico-piv-tool -a generate -s 9a
-/// ```
-/// 
-/// **TPM Setup**:
-/// ```bash
-/// # Install TPM2 tools
-/// sudo apt-get install tpm2-tools tpm2-pkcs11
-/// 
-/// # Initialize TPM
-/// tpm2_startup -c
-/// ```
+// Integration Guide:
+// 
+// **YubiKey Setup**:
+// ```bash
+// # Install PKCS#11 library
+// sudo apt-get install ykcs11
+// 
+// # Initialize PIV application
+// yubico-piv-tool -a generate -s 9a
+// ```
+// 
+// **TPM Setup**:
+// ```bash
+// # Install TPM2 tools
+// sudo apt-get install tpm2-tools tpm2-pkcs11
+// 
+// # Initialize TPM
+// tpm2_startup -c
+// ```
