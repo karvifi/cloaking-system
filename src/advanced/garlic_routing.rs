@@ -114,8 +114,8 @@ impl GarlicRouter {
     }
 }
 
-/// Advantages over traditional Onion Routing:
-/// 1. Multiple messages bundled = harder traffic analysis
-/// 2. Decoy messages can be added
-/// 3. Better resistance to timing attacks
-/// 4. More efficient (less overhead per message)
+// Advantages over traditional Onion Routing:
+// 1. Multiple messages bundled = harder traffic analysis
+// 2. Decoy messages can be added
+// 3. Better resistance to timing attacks
+// 4. More efficient (less overhead per message)
