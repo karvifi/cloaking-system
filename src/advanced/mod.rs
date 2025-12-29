@@ -18,6 +18,10 @@ pub mod sgx_enclave;
 pub mod steganography;
 pub mod qkd;
 pub mod garlic_routing;
+pub mod oqs_integration;
+pub mod dpi_evasion_live;
+pub mod i2p_garlic_live;
+pub mod all_integrations_live;
 
 pub use supply_chain::BuildAttestation;
 pub use container_security::ContainerSecurityManager;
