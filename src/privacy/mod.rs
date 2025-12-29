@@ -19,6 +19,12 @@ pub mod enclave;
 pub mod entropy_sync;
 pub mod sovereignty;
 pub mod clock_skew;
+pub mod packet_auth;
+pub mod session_keys;
+pub mod metadata_strip;
+pub mod cert_pinning;
+pub mod ja3_morphing;
+
 
 pub use metadata_hiding::{
     MetadataProtectedMessage,
@@ -53,3 +59,8 @@ pub mod opsec;
 pub use opsec::{OpsecManager, CoverStory};
 pub mod expiration;
 pub use expiration::DataExpirationManager;
+pub use packet_auth::{PacketAuthenticator, AuthenticatedPacket};
+pub use session_keys::SessionKeyManager;
+pub use metadata_strip::MetadataStripper;
+pub use cert_pinning::{CertificatePinner, DualPathValidator};
+pub use ja3_morphing::{TrafficMorpher, FingerprintDatabase, TlsFingerprint};
