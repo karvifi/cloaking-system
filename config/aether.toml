@@ -1,0 +1,49 @@
+# Aether Supreme Configuration
+# Tier 0-8 Feature Control
+
+[tier0]
+quantuminsert_defense = true
+xkeyscore_defense = true
+key_rotation_seconds = 60
+metadata_stripping = true
+certificate_pinning = true
+
+[tier1]
+proxy_health_check = true
+ja3_profile = "chrome_128_win11"  # Options: chrome_128_win11, firefox_120_linux, safari_17_macos
+traffic_morphing = true
+
+[tier2]
+bbot_enabled = false  # Requires: pip install bbot
+masscan_enabled = false  # Requires: masscan binary
+smartdns_enabled = true
+frp_enabled = false  # Requires: frp server setup
+
+[tier3]
+hybrid_pq_signatures = true
+recursive_snarks = false  # Experimental
+homomorphic_encryption = false  # Requires: 'homomorphic' feature
+
+[tier4]
+supply_chain_verification = true
+container_isolation = false  # Requires: Docker
+hsm_enabled = false  # Requires: YubiKey or TPM
+
+[tier5]
+dht_discovery = false  # Requires: Bootstrap nodes
+proof_of_bandwidth = false
+dao_governance = false
+
+[tier6]
+constant_time_crypto = true
+ml_mimicry = false  # Resource intensive
+memory_safety_hardening = true
+
+[tier7]
+adversarial_testing = false  # Development only
+performance_monitoring = true
+fuzzing = false  # Requires: cargo fuzz
+
+[tier8]
+cli_enabled = true
+api_docs = true

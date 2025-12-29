@@ -8,12 +8,16 @@
 pub mod config;
 pub mod crypto;
 pub mod mixnet;
-pub mod protocols;
-pub mod routing;
+pub mod consensus;
+pub mod advanced;
+pub mod integration;
 pub mod metrics;
+pub mod docs;
+pub mod install;
+pub mod orchestrator;
+pub mod cli;
 pub mod error;
 pub mod zk_access;
-pub mod consensus;
 pub mod network;
 
 // Advanced features (Ultimate Edition)
